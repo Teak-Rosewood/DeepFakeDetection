@@ -22,8 +22,8 @@ class Patches(layers.Layer):
 def create_vit_layer(input_shape):
     num_patches = (input_shape[0] // 16) * (input_shape[1] // 16)  # Assuming 16x16 patches
     projection_dim = 64
-    num_heads = 4
-    transformer_layers = 4
+    num_heads = 8
+    transformer_layers = 8
     transformer_units = [projection_dim * 2, projection_dim]  # MLP layers size in the transformer
 
     inputs = layers.Input(shape=input_shape)
@@ -44,6 +44,7 @@ def create_vit_layer(input_shape):
         x2 = layers.Add()([attention_output, encoded_patches])
         x3 = layers.LayerNormalization(epsilon=1e-6)(x2)
         x3 = layers.Dense(units=transformer_units[0], activation=tf.nn.gelu)(x3)
+        x3 = layers.Dropout(0.1)(x3)
         x3 = layers.Dense(units=projection_dim)(x3)
         encoded_patches = layers.Add()([x3, x2])
 
