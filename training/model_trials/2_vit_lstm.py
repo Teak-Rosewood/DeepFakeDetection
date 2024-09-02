@@ -52,3 +52,18 @@ def create_vit_layer(input_shape):
     features = layers.GlobalAveragePooling1D()(representation)
 
     return models.Model(inputs=inputs, outputs=features)
+
+# Epoch 4/10
+# 100/100 ━━━━━━━━━━━━━━━━━━━━ 297s 3s/step - accuracy: 0.9314 - loss: 0.2779
+# Epoch 5/10
+# 100/100 ━━━━━━━━━━━━━━━━━━━━ 298s 3s/step - accuracy: 0.9366 - loss: 0.2491
+# Epoch 6/10
+# 100/100 ━━━━━━━━━━━━━━━━━━━━ 297s 3s/step - accuracy: 0.9275 - loss: 0.2659
+# Epoch 7/10
+# 100/100 ━━━━━━━━━━━━━━━━━━━━ 297s 3s/step - accuracy: 0.9340 - loss: 0.2581
+# Epoch 8/10
+# 100/100 ━━━━━━━━━━━━━━━━━━━━ 297s 3s/step - accuracy: 0.9479 - loss: 0.2253
+# Epoch 9/10
+# 100/100 ━━━━━━━━━━━━━━━━━━━━ 297s 3s/step - accuracy: 0.9325 - loss: 0.2573
+# Epoch 10/10
+# 100/100 ━━━━━━━━━━━━━━━━━━━━ 298s 3s/step - accuracy: 0.9372 - loss: 0.2440
