@@ -53,6 +53,29 @@ def create_vit_layer(input_shape):
 
     return models.Model(inputs=inputs, outputs=features)
 
+def create_vit_lstm_model(input_shape, frames, num_classes):
+    # Input for video frames (e.g., batch_size, time_steps, height, width, channels)
+    video_input = layers.Input(shape=(frames, *input_shape))
+    
+    # TimeDistributed layer to apply the ViT model to each frame
+    vit_layer = create_vit_layer(input_shape)
+    processed_frames = layers.TimeDistributed(vit_layer)(video_input)
+    
+    # LSTM layer to process sequences of extracted features
+    lstm_out = layers.LSTM(128, return_sequences=False)(processed_frames)
+    
+    # Fully connected layer
+    dense_out = layers.Dense(64, activation='relu')(lstm_out)
+    dense_out = layers.Dropout(0.5)(dense_out)
+    
+    # Output layer
+    output = layers.Dense(num_classes, activation='softmax')(dense_out)
+    
+    # Define the model
+    model = models.Model(inputs=video_input, outputs=output)
+    
+    return model
+
 # Epoch 4/10
 # 100/100 ━━━━━━━━━━━━━━━━━━━━ 297s 3s/step - accuracy: 0.9314 - loss: 0.2779
 # Epoch 5/10

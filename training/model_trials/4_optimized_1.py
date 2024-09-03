@@ -2,18 +2,11 @@ import tensorflow as tf
 from tensorflow.keras import layers, models
 
 # Data augmentation layer
-from tensorflow.keras.layers import RandomFlip, RandomRotation, RandomZoom, RandomBrightness, RandomContrast, RandomCrop, RandomTranslation, Rescaling
+from tensorflow.keras.layers import RandomFlip, RandomRotation
 
-# Enhanced data augmentation layer
 data_augmentation = tf.keras.Sequential([
     RandomFlip("horizontal_and_vertical"),
     RandomRotation(0.2),
-    RandomZoom(0.2),
-    RandomBrightness(0.2),
-    RandomContrast(0.2),
-    RandomCrop(height=224, width=224),
-    RandomTranslation(height_factor=0.2, width_factor=0.2),
-    Rescaling(1./255)  # Normalize pixel values to [0, 1]
 ])
 
 # Patches layer with Conv2D for patch embedding
@@ -76,15 +69,15 @@ def create_vit_layer(input_shape):
     return models.Model(inputs=inputs, outputs=features)
 
 # Create the final ViT-LSTM model
-def create_vit_lstm_model(input_shape, num_classes):
-    video_input = layers.Input(shape=(None, *input_shape))
+def create_vit_lstm_model(input_shape, frames, num_classes):
+    video_input = layers.Input(shape=(frames, *input_shape))
     
     # Data Augmentation
-    # augmented_frames = layers.TimeDistributed(data_augmentation)(video_input)
+    augmented_frames = layers.TimeDistributed(data_augmentation)(video_input)
     
     # ViT with more complexity
     vit_layer = create_vit_layer(input_shape)
-    processed_frames = layers.TimeDistributed(vit_layer)(video_input)
+    processed_frames = layers.TimeDistributed(vit_layer)(augmented_frames)
     
     # Bidirectional LSTM with Attention
     lstm_out = layers.Bidirectional(layers.LSTM(128, return_sequences=True))(processed_frames)
